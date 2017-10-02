@@ -2,7 +2,7 @@
 # @Author: Haonan Wu
 # @Date:   2017-10-01 22:30:53
 # @Last Modified by:   Haonan Wu
-# @Last Modified time: 2017-10-02 00:15:50
+# @Last Modified time: 2017-10-02 08:59:08
 
 from numpy import *  
 import matplotlib.pyplot as plt  
@@ -24,7 +24,7 @@ def trainLogRegres(train_x, train_y, opts):
   
     numSamples, numFeatures = shape(train_x)  
     alpha = opts['alpha']; maxIter = opts['maxIter']  
-    weights = random.rand(numFeatures, 1) 
+    weights = zeros((numFeatures, 1))
     # optimize through gradient descent algorilthm  
     for k in range(maxIter):  
         if opts['optimizeType'] == 'gradDescent': # gradient descent algorilthm  
@@ -102,6 +102,7 @@ def loadData(direction):
     m = len(trainfileList)
     train_x = zeros((m,1024))
     train_y = zeros((m,1))
+    dataIndex = list(range(m))
     for i in range(m):
         returnArray = zeros((1,1024))  #每个txt文件形成的特征向量
         filename = trainfileList[i]
@@ -110,11 +111,14 @@ def loadData(direction):
             lineStr = fr.readline()
             for k in range(32):
                 returnArray[0,32*j+k]=int(lineStr[k])
-        train_x[i,:] = returnArray   #存储特征向量
+        data_randIndex = int(random.uniform(0, len(dataIndex)))
+        randIndex = dataIndex[data_randIndex]
+        train_x[randIndex,:] = returnArray   #存储特征向量
     
         filename0 = filename.split('.')[0]
         label = filename0.split('_')[0]
-        train_y[i] = int(label)     #存储类别
+        train_y[randIndex] = int(label)     #存储类别
+        del(dataIndex[data_randIndex])
     return mat(train_x), mat(train_y)
 
 
